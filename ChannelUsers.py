@@ -1,6 +1,7 @@
 import configparser
 import json
 import asyncio
+import csv
 
 from telethon import TelegramClient
 from telethon.errors import SessionPasswordNeededError
@@ -51,11 +52,15 @@ async def main(phone):
     offset = 0
     limit = 100
     all_participants = []
+    a = 0
+    
 
     while True:
+        print(a)
+        a = a + 100
         participants = await client(GetParticipantsRequest(
             my_channel, ChannelParticipantsSearch(''), offset, limit,
-            hash=0
+            hash=0                             
         ))
         if not participants.users:
             break
@@ -68,8 +73,15 @@ async def main(phone):
             {"id": participant.id, "first_name": participant.first_name, "last_name": participant.last_name,
              "user": participant.username, "phone": participant.phone, "is_bot": participant.bot})
 
-    with open('user_data.json', 'w') as outfile:
-        json.dump(all_user_details, outfile)
+    #with open('user_data.json', 'w') as outfile:
+    #    json.dump(all_user_details, outfile
+    # https://t.me/grupokakaroto
+
+
+
+    with open('user_data.csv','w') as outfile:
+        tabela = csv.writer(outfile)
+        tabela.writerow(all_user_details,outfile)
 
 with client:
     client.loop.run_until_complete(main(phone))
